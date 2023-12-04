@@ -29,7 +29,8 @@ class ProductController {
 
                 // Perform scraping for each product
                 const updatedProducts = await Promise.all(userProducts.map(async (product) => {
-                    const newProduct = await scraper.doRequest(product.link, 0, 0);
+                    
+                    const newProduct = await scraper.doRequest(product.link, product.price, product.original_price, product.discount);
 
                     // Update the product in the database with new information
                     const updatedProduct = await Product.findOneAndUpdate(
@@ -74,7 +75,7 @@ class ProductController {
                 name: newProduct.nombreProducto,
                 price: Number(newProduct.precio),
                 discount: newProduct.descuento,
-                original_price: newProduct.precioAnterior,
+                original_price: newProduct.precio,
                 link: newProduct.link,
                 image: newProduct.linkImg,
                 email: req.body.user ?.email || 'default@example.com',

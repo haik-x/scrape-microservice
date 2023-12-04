@@ -13,28 +13,26 @@ async function doRequest(link, price, previousPrice, productDiscount) {
     await page.reload({ waitUntil: 'networkidle0', ignoreCache: true });
 
     const productName = await page.$eval('.ui-pdp-title', (element) => element.textContent);
-    console.log(productName);
+    //console.log(productName);
 
     const productPrice = await page.$eval('[itemprop="price"]', (element) => element.getAttribute('content'));
-    console.log('Hi, this is the new price', productPrice);
 
-    if (productPrice !== price) {
+    /*if (productPrice !== price) {
       previousPrice = price;
       if (productPrice < previousPrice) {
         productDiscount = (previousPrice * 100) / productPrice;
       } else {
         productDiscount = 0;
       }
-    }
+    }*/
 
     const productImg = await page.$eval('img.ui-pdp-image.ui-pdp-gallery__figure__image', (element) => element.getAttribute('src'));
-    console.log(productImg);
 
     // Add new Product to Json
     const infoProducts = {
       precio: productPrice,
-      descuento: productDiscount,
-      precioAnterior: previousPrice,
+      descuento: previousPrice,
+      precioAnterior: previousPrice ? previousPrice : productPrice,
       nombreProducto: productName,
       link: link,
       linkImg: productImg,
